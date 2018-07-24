@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"time"
+	"os"
 	"wen/svc-d/config"
 
 	"github.com/davecgh/go-spew/spew"
@@ -14,7 +15,8 @@ import (
 //add new check, update it, and store the config as file(update config)
 
 func main() {
-	log.Println("starting...")
+	fmt.Println("starting...")
+	log.Println("starting... log")
 
 	c := checkup.Checkup{
 		Checkers: []checkup.Checker{
@@ -28,16 +30,17 @@ func main() {
 			Dir:         "./data",
 			CheckExpiry: 7 * 24 * time.Hour,
 		},
-		Notifier: Wechat{},
+		//Notifier: Wechat{},
 	}
 	cc := config.New("test.json")
 	cc.Checkup = c
 
-	log.Println("start save")
+	fmt.Println("start save")
 	err := cc.Save()
 	if err != nil {
-		log.Println("save error")
-		log.Fatal(err)
+		fmt.Println("save error", err)
+		os.Exit(1)
+
 	}
 	spew.Dump(cc)
 	/*
