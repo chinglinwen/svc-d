@@ -16,6 +16,7 @@ import (
 type Config struct {
 	filename string
 	checkup.Checkup
+	Index map[string]int
 }
 
 // New creates a new Config object.
@@ -26,12 +27,46 @@ func New(filename string) *Config {
 	return &config
 }
 
+// check if it exist first
+func (c *Config) Add(name string, check checkup.Checker) error {
+	for _, v := range c.Index {
+		if v != 0 {
+			return fmt.Errorf("already exist")
+		}
+	}
+	i := len(c.Checkers)
+	c.Checkers = append(c.Checkers, check)
+	c.Index[name] = i
+}
+
+func (c *Config) Delete(name string) error {
+
+	/*
+		for i, v := range config.Checkers {
+			switch v.(type) {
+			case checkup.HTTPChecker:
+				a := v.(checkup.HTTPChecker)
+			case checkup.TCPChecker:
+				a := v.(checkup.TCPChecker)
+			default:
+				fmt.Errorf("no type found for add")
+			}
+		}
+	*/
+	i := c.Index[name]
+	if i == 0 {
+		return fmt.Errorf("not exist")
+	}
+	c.Checkers = append(c.Checkers[:i], c.Checkers[i+1:]...)
+	delete(c.Index, "name")
+
+}
+
 func (config *Config) Save() error {
 	b, err := json.MarshalIndent(config.Checkup, "", "  ")
 	if err != nil {
 		return err
 	}
-	fmt.Println("b", b)
 	return ioutil.WriteFile(config.filename, b, 0666)
 }
 
