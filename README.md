@@ -39,7 +39,19 @@ have delay ( how long? )
 | http |        |      |
 | tcp  |        |      |
 
+## Example data
 
+{
+
+  Project: example
+
+  Region: M7
+
+  httpchecker: 
+
+  tcpchecker: 
+
+}
 
 ### HTTPChecker
 
@@ -53,8 +65,6 @@ have delay ( how long? )
  MustNotContain: (string) "",
  Attempts: (int) 5,
  AttemptSpacing: (time.Duration) 0s,
- Client: (*http.Client)(<nil>),
- Headers: (http.Header) <nil>
 },
 ```
 
@@ -65,9 +75,6 @@ have delay ( how long? )
 (checkup.TCPChecker) {
  Name: (string) (len=4) "tcp1",
  URL: (string) (len=18) "220.181.111.188:80",
- TLSEnabled: (bool) false,
- TLSSkipVerify: (bool) false,
- TLSCAFile: (string) "",
  Timeout: (time.Duration) 0s,
  ThresholdRTT: (time.Duration) 0s,
  Attempts: (int) 5
