@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -21,15 +21,17 @@ func homeHandler(c echo.Context) error {
 func checkHandler(c echo.Context) error {
 	x := &checkup.HTTPChecker{}
 	if err := c.Bind(x); err != nil {
-		fmt.Println("checkhandler", err)
+		log.Println("checkhandler", err)
 		return err
 	}
 	return c.JSON(http.StatusCreated, x)
 }
 
 func notifyHandler(c echo.Context) error {
+	log.Println("starting notify")
 	n := &checkup.Qianbao{}
 	if err := c.Bind(n); err != nil {
+		log.Println("notify err", err)
 		return err
 	}
 	return c.JSON(http.StatusCreated, n)

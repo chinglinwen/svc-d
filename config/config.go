@@ -70,7 +70,7 @@ func (c *Config) Delete(name string) error {
 	}
 	c.Checkers = append(c.Checkers[:i], c.Checkers[i+1:]...)
 	delete(c.Index, "name")
-
+	return nil
 }
 
 func (config *Config) Save() error {

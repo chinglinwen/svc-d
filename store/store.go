@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/chinglinwen/checkup"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/chinglinwen/checkup"
 )
 
 // project based, need to write concurrency checks
@@ -21,7 +21,7 @@ type Project struct {
 var schema = `
 CREATE TABLE projects (
     id int,
-    last_name text,
+    name text,
     email text
 );
 
