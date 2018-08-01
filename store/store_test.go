@@ -2,19 +2,20 @@ package store
 
 import (
 	"fmt"
-	"log"
+	"os"
 	"testing"
 	"time"
 
+	"github.com/chinglinwen/checkup"
 	"github.com/jmoiron/sqlx"
-	"github.com/sourcegraph/checkup"
 )
 
 func init() {
 	var err error
 	DB, err = sqlx.Connect("postgres", "postgresql://postgres:123456@localhost/?sslmode=disable")
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println("init err", err)
+		os.Exit(1)
 	}
 
 	//db.MustExec(schema)
