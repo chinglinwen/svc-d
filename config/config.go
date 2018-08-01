@@ -12,11 +12,21 @@ import (
 	"github.com/sourcegraph/checkup"
 )
 
+// doesn't support, label, checker's name need to be unique?
+// no way to delete?
+//
 // Config represents a configuration file.
 type Config struct {
 	filename string
 	checkup.Checkup
 	Index map[string]int
+}
+
+// project based, need to write concurrency checks
+type Project struct {
+	Name   string
+	Region string
+	checkup.Checkup
 }
 
 // New creates a new Config object.
@@ -37,6 +47,7 @@ func (c *Config) Add(name string, check checkup.Checker) error {
 	i := len(c.Checkers)
 	c.Checkers = append(c.Checkers, check)
 	c.Index[name] = i
+	return nil
 }
 
 func (c *Config) Delete(name string) error {
