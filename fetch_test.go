@@ -7,7 +7,7 @@ import (
 )
 
 func TestFetch(t *testing.T) {
-	p, err := fetch(upstreamapi)
+	p, err := fetch(*upstreamAPI)
 	if err != nil {
 		t.Error(err)
 	}

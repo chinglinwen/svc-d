@@ -1,3 +1,4 @@
+// not using for now
 package store
 
 import (
@@ -17,19 +18,6 @@ type Project struct {
 	RawChecks string `db:"checks"`
 	checkup.Checkup
 }
-
-var schema = `
-CREATE TABLE projects (
-    id int,
-    name text,
-    email text
-);
-
-CREATE TABLE place (
-    country text,
-    city text NULL,
-    telcode integer
-)`
 
 var DB *sqlx.DB
 

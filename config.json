@@ -1,0 +1,25 @@
+{
+  "notifier": {
+    "name": "",
+    "username": "wen",
+    "channel": "http://localhost:8080/notify",
+    "webhook": ""
+  },
+  "storage": {
+    "provider": "fs",
+    "dir": "data",
+    "url": "",
+    "check_expiry": 604800000000000
+  },
+  "checkers": [
+    {
+      "type": "http",
+      "endpoint_name": "ops_test",
+      "endpoint_url": "http://fs.qianbao-inc.com:80",
+      "up_status": 452,
+      "attempts": 5
+    }
+  ],
+  "concurrent_checks": 100,
+  "timestamp": "0001-01-01T00:00:00Z"
+}

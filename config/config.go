@@ -9,7 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/sourcegraph/checkup"
+	"github.com/chinglinwen/checkup"
 )
 
 // doesn't support, label, checker's name need to be unique?
@@ -17,21 +17,19 @@ import (
 //
 // Config represents a configuration file.
 type Config struct {
-	filename string
+	Filename string
+	Env      string
 	checkup.Checkup
 	Index map[string]int
 }
 
-// project based, need to write concurrency checks
-type Project struct {
-	Name   string
-	Region string
-	checkup.Checkup
-}
-
+// TODO: try set notify person as project based, need to implement RBAC?
 // New creates a new Config object.
-func New(filename string) *Config {
-	config := Config{filename: filename}
+func New(filename, env string) *Config {
+	config := Config{
+		Filename: filename,
+		Env:      env,
+	}
 	config.Reload()
 	go config.watch()
 	return &config
@@ -78,12 +76,12 @@ func (config *Config) Save() error {
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(config.filename, b, 0666)
+	return ioutil.WriteFile(config.Filename, b, 0666)
 }
 
 // Reload clears the config cache.
 func (config *Config) Reload() error {
-	c, err := primeCacheFromFile(config.filename)
+	c, err := primeCacheFromFile(config.Filename)
 	config.Checkup = c
 
 	if err != nil {
