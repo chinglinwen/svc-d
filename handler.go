@@ -1,19 +1,18 @@
 package main
 
 import (
-	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
+	"wen/hook-api/upstream"
 
 	"github.com/chinglinwen/log"
-	"github.com/go-resty/resty"
 
 	"github.com/chinglinwen/checkup"
 	"github.com/labstack/echo"
-)
 
-type Notify struct {
-}
+	"wen/svc-d/fetch"
+)
 
 func homeHandler(c echo.Context) error {
 	//may do redirect later?
@@ -22,13 +21,32 @@ func homeHandler(c echo.Context) error {
 
 // if provided name only, do a active check
 // otherwise do a info register and active check
+//
+// if provide ip, use that ip
+// fetch config from project center, if non-provided, use default?
 func checkHandler(c echo.Context) error {
-	x := &checkup.HTTPChecker{}
-	if err := c.Bind(x); err != nil {
-		log.Println("checkhandler", err)
+	appname := c.FormValue("appname")
+	env := c.FormValue("env")
+
+	/* 	x := &fetch.ProjectCheck{}
+	   	if err := c.Bind(x); err != nil {
+	   		log.Println("checkhandler bind", err)
+	   		return err
+	   	} */
+
+	p, err := fetch.Fetch(env, appname)
+	if err != nil {
+		log.Println("fetch project err: ", err)
 		return err
 	}
-	return c.JSON(http.StatusCreated, x)
+	err = p.Check()
+	if err != nil {
+		log.Printf("%v check err: %v\n", p.Name, err)
+		return err
+	}
+	out := fmt.Sprintf("%v check ok", p.Name)
+	log.Println(out)
+	return c.JSON(http.StatusOK, out)
 }
 
 func notifyHandler(c echo.Context) error {
@@ -37,9 +55,10 @@ func notifyHandler(c echo.Context) error {
 		log.Println("notify handler bind err", err)
 		return err
 	}
-
 	log.Println("notify: ", r)
-	ok, err := ChangeState(r.Endpoint, r.Title)
+
+	name, ns := getNamespace(r.Title)
+	ok, err := upstream.ChangeState(r.Endpoint, name, ns, "0")
 	if err != nil {
 		log.Printf("notify:  %v %v, change upstream state, err: %v", r.Title, r.Endpoint, err)
 		return err
@@ -50,56 +69,14 @@ func notifyHandler(c echo.Context) error {
 	return c.String(http.StatusOK, "notify page")
 }
 
-// ChangeState change project specific ip state, remove item from nginx
-// The logic may need to distinguish VM and docker
-// We currently check based on docker first.
-//
-// Upstream will make it disabled ( need rethink?)
-// Service recovery need human manual operation.
-func ChangeState(endpoint, title string) (bool, error) {
-	ip, port := endpoint2ip(endpoint)
-	resp, err := resty.R().
-		SetFormData(map[string]string{
-			"appname": title,
-			"ip":      ip,
-			"port":    port,
-			"state":   "0", // int 1:up or 0:down
-		}).
-		Post(*upstreamnChangeAPI)
-
-	if err != nil {
-		return false, err
-	}
-	state, err := parseState(resp.Body())
-	if state != true {
-		log.Println("ChangeState resp: ", string(resp.Body()))
-	}
-	return state, err
-}
-
-func parseState(body []byte) (state bool, err error) {
-	var result []interface{}
-	err = json.Unmarshal(body, &result)
-	if err != nil || len(result) == 0 {
+func getNamespace(title string) (name, ns string) {
+	if title == "" {
 		return
 	}
-	if state, _ = result[0].(bool); state != true {
-		return
-	}
-	return true, err
-}
-
-func endpoint2ip(e string) (ip, port string) {
-	str := strings.Split(e, "/")
-	var s string
-	if len(str) > 2 {
-		s = str[2]
-	} else if len(str) == 1 {
-		s = str[0]
-	}
-	ipport := strings.Split(s, ":")
-	if len(ipport) == 2 {
-		ip, port = ipport[0], ipport[1]
+	s := strings.Split(title, "#")
+	name = s[0]
+	if len(s) >= 2 {
+		ns = s[1]
 	}
 	return
 }

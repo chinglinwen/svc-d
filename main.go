@@ -6,7 +6,9 @@ import (
 	"os"
 	"time"
 
+	"wen/svc-d/check"
 	"wen/svc-d/config"
+	"wen/svc-d/fetch"
 
 	"github.com/chinglinwen/checkup"
 	"github.com/chinglinwen/log"
@@ -15,23 +17,18 @@ import (
 )
 
 var (
-	conf               *config.Config
-	env                = flag.String("env", "test", "env includes (test,pre,pro)")
-	port               = flag.String("p", "8080", "port")
-	testproject        = flag.String("t", "ops_test", "test project")
-	checkonetime       = flag.Bool("once", false, "check only once")
-	concurrentChecks   = flag.Int("cc", 100, "number of concurrent checks")
-	upstreamAPI        = flag.String("upstream", "http://upstream-pre.sched.qianbao-inc.com/get_upstream_all_instance/", "upstream fetch api url")
-	upstreamnChangeAPI = flag.String("upstreamc", "http://upstream-pre.sched.qianbao-inc.com/up_nginx_state/", "upstream change api url")
+	conf             *config.Config
+	env              = flag.String("env", "qa", "env includes (qa,pre,pro)")
+	port             = flag.String("p", "8080", "port")
+	concurrentChecks = flag.Int("cc", 100, "number of concurrent checks")
+	testproject      = flag.String("test", "ops_fs", "test project name")
+	checkonetime     = flag.Bool("once", false, "check only once")
 )
 
 // try have two config
 // one for fetch and one for manual editing
 func init() {
 	flag.Parse()
-	if *env == "test" {
-		*upstreamAPI = ""
-	}
 	conf = config.New("config.json", *env) //try the item, project based ?  why not just name?
 
 	_ = os.Mkdir("data", os.ModeDir)
@@ -45,17 +42,28 @@ func init() {
 	}
 	conf.ConcurrentChecks = *concurrentChecks
 	conf.Save()
+
+	if *testproject != "" {
+		log.Printf("test for %v project only\n", *testproject)
+		check.TestProject = *testproject
+	}
+	if *checkonetime {
+		log.Println("check one time only")
+		check.CheckOneTime = *checkonetime
+	}
+	fetch.Env = *env
 }
 
-//define a global variable
-//add new check, update it, and store the config as file(update config)
+// define a global variable
+// add new check, update it, and store the config as file(update config)
 
 func main() {
 	log.Println("starting...")
 	log.Debug.Println("debug is on")
 	c, _ := json.MarshalIndent(conf, "", " ")
 	log.Println("config:", string(c))
-	go start()
+
+	go check.Start(conf)
 
 	e := echo.New()
 	//e.Use(middleware.Logger())
