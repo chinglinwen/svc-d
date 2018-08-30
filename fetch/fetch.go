@@ -33,7 +33,8 @@ var (
 
 var (
 	// limit env for fetched projects
-	Env = "qa" // qa,pre,pro
+	Env        = "qa" // qa,pre,pro
+	DockerOnly bool
 )
 
 // for get all projects struct
@@ -203,10 +204,12 @@ func ConvertToCheckWithTest(projects Projects, configs ProjectChecks, testprojec
 		}
 		enabledcnt++
 
-		if p.IsDocker != "1" {
-			continue
+		if DockerOnly {
+			if p.IsDocker != "1" {
+				continue
+			}
+			dockercnt++
 		}
-		dockercnt++
 
 		// test first
 		if testproject != "" && p.Name != testproject {

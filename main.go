@@ -24,6 +24,7 @@ var (
 	concurrentChecks = flag.Int("cc", 100, "number of concurrent checks")
 	testproject      = flag.String("test", "", "test project name")
 	checkonetime     = flag.Bool("once", false, "check only once")
+	dockerOnly       = flag.Bool("docker", true, "check docker only")
 )
 
 // try have two config
@@ -54,6 +55,7 @@ func init() {
 		check.CheckOneTime = *checkonetime
 	}
 	fetch.Env = *env
+	fetch.DockerOnly = *dockerOnly
 }
 
 // define a global variable
