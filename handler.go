@@ -27,6 +27,9 @@ func homeHandler(c echo.Context) error {
 func checkHandler(c echo.Context) error {
 	appname := c.FormValue("appname")
 	env := c.FormValue("env")
+	if appname == "" {
+		return c.JSONPretty(400, E(1, "appname not provided", "error"), " ")
+	}
 
 	/* 	x := &fetch.ProjectCheck{}
 	   	if err := c.Bind(x); err != nil {
@@ -36,7 +39,7 @@ func checkHandler(c echo.Context) error {
 
 	p, err := fetch.Fetch(env, appname)
 	if err != nil {
-		e := fmt.Sprintf("fetch project err: ", err)
+		e := fmt.Sprintf("fetch project err: %v", err)
 		return c.JSONPretty(400, E(1, e, "error"), " ")
 	}
 	err = p.Check()
@@ -62,7 +65,7 @@ func E(code int, msg, status string) map[string]interface{} {
 func notifyHandler(c echo.Context) error {
 	r := &checkup.Result{}
 	if err := c.Bind(r); err != nil {
-		e := fmt.Sprintf("notify handler bind err", err)
+		e := fmt.Sprintf("notify handler bind err %v", err)
 		return c.JSONPretty(400, E(1, e, "error"), " ")
 	}
 	log.Println("notify: ", r)
@@ -79,7 +82,8 @@ func notifyHandler(c echo.Context) error {
 		return c.JSONPretty(400, E(3, e, "error"), " ")
 	}
 
-	return c.JSONPretty(http.StatusOK, E(0, "notify ok", "ok"), " ")
+	msg := fmt.Sprintf("notify:  %v %v, change upstream state ok", r.Title, r.Endpoint)
+	return c.JSONPretty(http.StatusOK, E(0, msg, "ok"), " ")
 }
 
 func getNamespace(title string) (name, ns string) {

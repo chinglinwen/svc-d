@@ -25,8 +25,9 @@ import (
 )
 
 var (
-	CheckOneTime bool
-	TestProject  string
+	CheckOneTime  bool
+	TestProject   string
+	CheckInterval int
 )
 
 // start backend check
@@ -34,7 +35,7 @@ func Start(conf *config.Config) {
 	log.Println("started fetch in the background")
 
 	var (
-		ticker = time.NewTicker(10 * time.Second)
+		ticker = time.NewTicker(time.Duration(CheckInterval) * time.Second)
 		//stop   *time.Ticker
 		now  time.Time
 		prev time.Time
@@ -67,10 +68,10 @@ func Start(conf *config.Config) {
 
 		err = conf.CheckAndStore()
 		if err != nil {
-			log.Println("check error", err)
+			log.Println("background check error", err)
 			continue
 		}
-		log.Printf("check ok\n\n")
+		log.Printf("background check ok\n\n")
 
 		prev = now
 

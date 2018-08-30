@@ -1,3 +1,5 @@
 #!/bin/sh
 GOOS=linux go build
-curl -s fs.qianbao-inc.com/t/uploadapi -F file=@svc-d -F truncate=yes
+tar -czf svc-d.tar.gz svc-d statuspage
+curl -s fs.qianbao-inc.com/k8s/soft/uploadapi -F file=@svc-d.tar.gz -F truncate=yes
+cksum ./svc-d

@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"wen/hook-api/upstream"
 
@@ -67,6 +68,38 @@ type AProjectIps struct {
 	IPs  []AProject
 }
 
+// many aproject mapp one project, so we pass config instead
+func (p *AProject) GetCheck(config ProjectCheck) (check checkup.Checker) {
+	if config.Type == "http" {
+		c := checkup.HTTPChecker{
+			Name: p.Name + "#" + p.Namespace + "#" + "http", // notify api will use it
+			URL:  "http://" + p.IP + ":" + p.Port,
+		}
+		if config.StatusCode == 0 {
+			c.UpStatus = 452 //above 500 consider error
+		} else {
+			c.UpStatus = config.StatusCode
+		}
+		if config.Attempts != 0 {
+			c.Attempts = config.Attempts
+		}
+		if config.MustContain != "" {
+			c.MustContain = config.MustContain
+		}
+		check = c
+	} else {
+		c := checkup.TCPChecker{
+			Name: p.Name + "#" + p.Namespace + "#" + "tcp", // notify api will use it
+			URL:  p.IP + ":" + p.Port,
+		}
+		if config.Timeout != 0 {
+			c.Timeout = time.Duration(config.Timeout) * time.Second
+		}
+		check = c
+	}
+	return
+}
+
 func (a AProjectIps) Check() error {
 	if len(a.IPs) == 0 {
 		return fmt.Errorf("no ip found for project: %v", a.Name)
@@ -79,24 +112,10 @@ func (a AProjectIps) Check() error {
 	}
 
 	for _, v := range a.IPs {
-		check := checkup.HTTPChecker{
-			Name: v.Name,
-			URL:  "http://" + v.IP + ":" + v.Port,
-		}
-		if config.StatusCode == 0 {
-			check.UpStatus = 452 //above 500 consider error
-		} else {
-			check.UpStatus = config.Attempts
-		}
-		if config.Attempts != 0 {
-			check.Attempts = config.Attempts
-		}
-		if config.MustContain != "" {
-			check.MustContain = config.MustContain
-		}
+		check := v.GetCheck(config)
 		checks = append(checks, check)
-
 	}
+
 	c := checkup.Checkup{
 		Checkers: checks,
 	}
@@ -195,21 +214,39 @@ func ConvertToCheckWithTest(projects Projects, configs ProjectChecks, testprojec
 		}
 		checkcnt++
 
-		check := checkup.HTTPChecker{
-			Name: p.Name + "#" + p.Namespace, // notify api will use it
-			URL:  "http://" + p.IP + ":" + p.Port,
+		if p.Name == "" || p.Namespace == "" {
+			log.Println("got invalid project", p)
+			continue
 		}
 
-		if configs[p.Name].StatusCode == 0 {
-			check.UpStatus = 452 //452, //above 500 consider error
+		var check checkup.Checker
+		if configs[p.Name].Type == "http" {
+			c := checkup.HTTPChecker{
+				Name: p.Name + "#" + p.Namespace + "#" + "http", // notify api will use it
+				URL:  "http://" + p.IP + ":" + p.Port,
+			}
+
+			if configs[p.Name].StatusCode == 0 {
+				c.UpStatus = 452 //452, //above 500 consider error
+			} else {
+				c.UpStatus = configs[p.Name].StatusCode
+			}
+			if configs[p.Name].Attempts != 0 {
+				c.Attempts = configs[p.Name].Attempts
+			}
+			if configs[p.Name].MustContain != "" {
+				c.MustContain = configs[p.Name].MustContain
+			}
+			check = c
 		} else {
-			check.UpStatus = configs[p.Name].StatusCode
-		}
-		if configs[p.Name].Attempts != 0 {
-			check.Attempts = configs[p.Name].Attempts
-		}
-		if configs[p.Name].MustContain != "" {
-			check.MustContain = configs[p.Name].MustContain
+			c := checkup.TCPChecker{
+				Name: p.Name + "#" + p.Namespace + "#" + "tcp", // notify api will use it
+				URL:  p.IP + ":" + p.Port,
+			}
+			if configs[p.Name].Timeout != 0 {
+				c.Timeout = time.Duration(configs[p.Name].Timeout) * time.Second
+			}
+			check = c
 		}
 
 		//spew.Dump("check", checks)

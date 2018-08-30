@@ -13,16 +13,103 @@
   },
   "checkers": [
     {
-      "type": "http",
-      "endpoint_name": "ops_fs#qb-qa-10",
-      "endpoint_url": "http://172.28.136.142:8000",
-      "up_status": 452
+      "type": "tcp",
+      "endpoint_name": "finance_zipkin_server#qb-qa-2#tcp",
+      "endpoint_url": "172.28.137.3:9411"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "bhhservice_bhh_trade_static#qb-qa-3#tcp",
+      "endpoint_url": "172.28.137.138:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "ismsgproject_records_worker_v1#qb-qa-1#tcp",
+      "endpoint_url": "172.28.136.155:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "bhhservice_bhh_manager_static#qb-qa-3#tcp",
+      "endpoint_url": "172.28.137.143:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "fs#qb-qa-10#tcp",
+      "endpoint_url": "172.28.137.20:8000"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "chedai_manager#qb-qa-1#tcp",
+      "endpoint_url": "172.28.136.158:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "ismsgproject_ismsg_sender_service_v1#qb-qa-1#tcp",
+      "endpoint_url": "172.28.136.145:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "chedai_manager#qb-qa-2#tcp",
+      "endpoint_url": "172.28.136.150:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "loanwebsite_manager#qb-qa-1#tcp",
+      "endpoint_url": "172.28.137.147:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "loan_manager_web#qb-qa-1#tcp",
+      "endpoint_url": "172.28.136.156:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "loanwebsite_manager#qb-qa-2#tcp",
+      "endpoint_url": "172.28.137.137:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "loan_trade_web#qb-qa-2#tcp",
+      "endpoint_url": "172.28.137.146:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "loan_manager_web#qb-qa-2#tcp",
+      "endpoint_url": "172.28.136.139:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "storm_supervisor_test#qb-qa-1#tcp",
+      "endpoint_url": "172.28.136.154:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "finance_qb_api_gate#qb-qa-1#tcp",
+      "endpoint_url": "172.28.137.13:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "loan_trade_web#qb-qa-9#tcp",
+      "endpoint_url": "172.28.137.142:8080"
+    },
+    {
+      "type": "tcp",
+      "endpoint_name": "storm_test#qb-qa-1#tcp",
+      "endpoint_url": "172.28.136.152:6627"
     },
     {
       "type": "http",
-      "endpoint_name": "ops_fs#qb-qa-10",
+      "endpoint_name": "ops_fs#qb-qa-10#http",
+      "endpoint_url": "http://172.28.137.148:8000",
+      "up_status": 200,
+      "attempts": 5
+    },
+    {
+      "type": "http",
+      "endpoint_name": "ops_fs#qb-qa-10#http",
       "endpoint_url": "http://172.28.137.24:8000",
-      "up_status": 452
+      "up_status": 200,
+      "attempts": 5
     }
   ],
   "concurrent_checks": 100,
