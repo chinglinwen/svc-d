@@ -32,41 +32,54 @@ func checkHandler(c echo.Context) error {
 	   	if err := c.Bind(x); err != nil {
 	   		log.Println("checkhandler bind", err)
 	   		return err
-	   	} */
+		   } */
 
 	p, err := fetch.Fetch(env, appname)
 	if err != nil {
-		log.Println("fetch project err: ", err)
-		return err
+		e := fmt.Sprintf("fetch project err: ", err)
+		return c.JSONPretty(400, E(1, e, "error"), " ")
 	}
 	err = p.Check()
 	if err != nil {
-		log.Printf("%v check err: %v\n", p.Name, err)
-		return err
+		e := fmt.Sprintf("api check for %v err: %v", p.Name, err)
+		return c.JSONPretty(400, E(2, e, "error"), " ")
 	}
-	out := fmt.Sprintf("%v check ok", p.Name)
+	out := fmt.Sprintf("api check for %v ok", p.Name)
 	log.Println(out)
-	return c.JSON(http.StatusOK, out)
+
+	return c.JSONPretty(http.StatusOK, E(0, out, "ok"), " ")
+}
+
+func E(code int, msg, status string) map[string]interface{} {
+	log.Println(msg)
+	return map[string]interface{}{
+		"code":   code,
+		"msg":    msg,
+		"status": status,
+	}
 }
 
 func notifyHandler(c echo.Context) error {
 	r := &checkup.Result{}
 	if err := c.Bind(r); err != nil {
-		log.Println("notify handler bind err", err)
-		return err
+		e := fmt.Sprintf("notify handler bind err", err)
+		return c.JSONPretty(400, E(1, e, "error"), " ")
 	}
 	log.Println("notify: ", r)
 
 	name, ns := getNamespace(r.Title)
 	ok, err := upstream.ChangeState(r.Endpoint, name, ns, "0")
 	if err != nil {
-		log.Printf("notify:  %v %v, change upstream state, err: %v", r.Title, r.Endpoint, err)
-		return err
+		e := fmt.Sprintf("notify:  %v %v, change upstream state, err: %v", r.Title, r.Endpoint, err)
+		return c.JSONPretty(400, E(2, e, "error"), " ")
 	}
+
 	if ok == false {
-		log.Printf("notify:  %v %v, change upstream state failure", r.Title, r.Endpoint)
+		e := fmt.Sprintf("notify:  %v %v, change upstream state failure", r.Title, r.Endpoint)
+		return c.JSONPretty(400, E(3, e, "error"), " ")
 	}
-	return c.String(http.StatusOK, "notify page")
+
+	return c.JSONPretty(http.StatusOK, E(0, "notify ok", "ok"), " ")
 }
 
 func getNamespace(title string) (name, ns string) {

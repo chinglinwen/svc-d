@@ -71,7 +71,7 @@ func main() {
 	e.Use(middleware.Static("/static"))
 
 	e.GET("/", homeHandler)
-	e.POST("/check", checkHandler)
+	e.GET("/check", checkHandler)
 	e.POST("/notify", notifyHandler)
 
 	err := e.Start(":" + *port)

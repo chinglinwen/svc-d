@@ -17,6 +17,12 @@
       "endpoint_name": "ops_fs#qb-qa-10",
       "endpoint_url": "http://172.28.136.142:8000",
       "up_status": 452
+    },
+    {
+      "type": "http",
+      "endpoint_name": "ops_fs#qb-qa-10",
+      "endpoint_url": "http://172.28.137.24:8000",
+      "up_status": 452
     }
   ],
   "concurrent_checks": 100,
