@@ -19,23 +19,25 @@ import (
 	"strings"
 	"time"
 
-	"wen/hook-api/upstream"
-
 	"github.com/chinglinwen/checkup"
 	"github.com/chinglinwen/log"
 	"github.com/go-resty/resty"
 )
 
 var (
-	UpstreamAllAPI    = upstream.UpstreamAllAPI
-	UpstreamSingleAPI = upstream.UpstreamSingleAPI
-)
-
-var (
 	// limit env for fetched projects
 	Env        = "qa" // qa,pre,pro
 	DockerOnly bool
+
+	UpstreamBase      string
+	UpstreamAllAPI    string
+	UpstreamSingleAPI string
 )
+
+func Init(UpstreamBase string) {
+	UpstreamAllAPI = UpstreamBase + "/get_upstream_all_instance/"
+	UpstreamSingleAPI = UpstreamBase + "/get_nginx_all/"
+}
 
 // for get all projects struct
 type Projects []Project
@@ -212,9 +214,9 @@ func ConvertToCheckWithTest(projects Projects, configs ProjectChecks, testprojec
 		}
 
 		// test first
-		if testproject != "" && p.Name != testproject {
-			continue
-		}
+		//if testproject != "" && p.Name != testproject {
+		//	continue
+		//}
 		checkcnt++
 
 		if p.Name == "" || p.Namespace == "" {

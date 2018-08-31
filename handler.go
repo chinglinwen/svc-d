@@ -56,9 +56,9 @@ func checkHandler(c echo.Context) error {
 func E(code int, msg, status string) map[string]interface{} {
 	log.Println(msg)
 	return map[string]interface{}{
-		"code":   code,
-		"msg":    msg,
-		"status": status,
+		"code":    code,
+		"message": msg,
+		"status":  status,
 	}
 }
 
@@ -71,6 +71,14 @@ func notifyHandler(c echo.Context) error {
 	log.Println("notify: ", r)
 
 	name, ns := getNamespace(r.Title)
+
+	if *testproject != "" {
+		if *testproject != name {
+			e := fmt.Sprintf("notify:  %v %v, it's not test project, skip change", r.Title, r.Endpoint)
+			return c.JSONPretty(http.StatusOK, E(0, e, "error"), " ")
+		}
+	}
+
 	ok, err := upstream.ChangeState(r.Endpoint, name, ns, "0")
 	if err != nil {
 		e := fmt.Sprintf("notify:  %v %v, change upstream state, err: %v", r.Title, r.Endpoint, err)

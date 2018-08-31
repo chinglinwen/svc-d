@@ -7,3 +7,4 @@ test.json
 *.gz
 *.log
 *.json
+*.test
