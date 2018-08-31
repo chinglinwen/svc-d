@@ -103,15 +103,18 @@ func (p *AProject) GetCheck(config ProjectCheck) (check checkup.Checker) {
 	return
 }
 
-func (a AProjectIps) Check() error {
+func (a AProjectIps) Check() (r []checkup.Result, err error) {
 	if len(a.IPs) == 0 {
-		return fmt.Errorf("no ip found for project: %v", a.Name)
+		err = fmt.Errorf("no ip found for project: %v", a.Name)
+		return
 	}
 	checks := make([]checkup.Checker, 0)
 	config, err := FetchConfig(a.Name)
 	if err != nil {
-		// just log
-		log.Printf("fetch config for %v, err: %v\n", a.Name, err)
+		// just log, later return err to the platform?
+		err = fmt.Errorf("fetch config for %v, err: %v", a.Name, err)
+		log.Println(err)
+		//return
 	}
 
 	for _, v := range a.IPs {
@@ -124,20 +127,10 @@ func (a AProjectIps) Check() error {
 	}
 	log.Debug.Println("c definition", c)
 
-	r, err := c.Check()
-	if err != nil {
-		return err
-	}
-	log.Debug.Println("result", r)
-	for _, v := range r {
-		if !v.Healthy {
-			return fmt.Errorf("%v, healthy: %v", v.Endpoint, v.Healthy)
-		}
-	}
-	return nil
+	return c.Check()
 }
 
-func endpoint2ip(e string) (ip, port string) {
+func Endpoint2ip(e string) (ip, port string) {
 	str := strings.Split(e, "/")
 	var s string
 	if len(str) > 2 {
@@ -189,12 +182,8 @@ func Fetchs() (p Projects, err error) {
 	return
 }
 
+// Merge upstream info and project center's check config.
 func ConvertToCheck(projects Projects, configs ProjectChecks) []checkup.Checker {
-	return ConvertToCheckWithTest(projects, configs, "")
-}
-
-// later may adopt setting for projects
-func ConvertToCheckWithTest(projects Projects, configs ProjectChecks, testproject string) []checkup.Checker {
 	var envcnt, enabledcnt, dockercnt, checkcnt int
 
 	checks := make([]checkup.Checker, 0)
@@ -204,7 +193,14 @@ func ConvertToCheckWithTest(projects Projects, configs ProjectChecks, testprojec
 			continue
 		}
 		envcnt++
-		if p.Enabled == "0" {
+		if p.Enabled != "1" {
+			// upstream not enable
+			log.Debug.Printf("%v disabled by upstream\n", p.Name)
+			continue
+		}
+		if configs[p.Name].Enabled != "on" {
+			// project center not enable
+			log.Debug.Printf("%v disabled by platform\n", p.Name)
 			continue
 		}
 		enabledcnt++
@@ -215,11 +211,6 @@ func ConvertToCheckWithTest(projects Projects, configs ProjectChecks, testprojec
 			}
 			dockercnt++
 		}
-
-		// test first
-		//if testproject != "" && p.Name != testproject {
-		//	continue
-		//}
 		checkcnt++
 
 		if p.Name == "" || p.Namespace == "" {

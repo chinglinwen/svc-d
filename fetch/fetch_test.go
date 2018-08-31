@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+func init() {
+	Init("http://upstream-pre.sched.qianbao-inc.com")
+}
+
 func TestFetchs(t *testing.T) {
 	p, err := Fetchs()
 	if err != nil {
@@ -16,7 +20,7 @@ func TestFetchs(t *testing.T) {
 }
 
 func TestFetch(t *testing.T) {
-	p, err := Fetch("qa", "ops_fs")
+	p, err := Fetch("pre", "ops_fs")
 	if err != nil {
 		t.Error(err)
 	}
@@ -45,11 +49,12 @@ func TestCheck(t *testing.T) {
 			t.Error(err)
 		}
 	*/
-	if err := a.Check(); err != nil {
+	r, err := a.Check()
+	if err != nil {
 		t.Log("check test err", err)
 		return
 	}
-	fmt.Println("ok")
+	fmt.Println(r)
 }
 
 var aprojectdemo = `

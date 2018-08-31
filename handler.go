@@ -31,22 +31,31 @@ func checkHandler(c echo.Context) error {
 		return c.JSONPretty(400, E(1, "appname not provided", "error"), " ")
 	}
 
-	/* 	x := &fetch.ProjectCheck{}
-	   	if err := c.Bind(x); err != nil {
-	   		log.Println("checkhandler bind", err)
-	   		return err
-		   } */
-
 	p, err := fetch.Fetch(env, appname)
 	if err != nil {
 		e := fmt.Sprintf("fetch project err: %v", err)
 		return c.JSONPretty(400, E(1, e, "error"), " ")
 	}
-	err = p.Check()
+	r, err := p.Check()
 	if err != nil {
-		e := fmt.Sprintf("api check for %v err: %v", p.Name, err)
+		e := fmt.Sprintf("fetch project err: %v", err)
 		return c.JSONPretty(400, E(2, e, "error"), " ")
 	}
+	log.Debug.Println("result", r)
+
+	var errfound bool
+
+	for _, v := range r {
+		if !v.Healthy {
+			errfound = true
+			log.Printf("%v, healthy: %v\n", v.Endpoint, v.Healthy)
+		}
+	}
+	if errfound {
+		out := EData(3, "check failure found", "error", Result2Map(r))
+		return c.JSONPretty(400, out, " ")
+	}
+
 	out := fmt.Sprintf("api check for %v ok", p.Name)
 	log.Println(out)
 
@@ -59,6 +68,46 @@ func E(code int, msg, status string) map[string]interface{} {
 		"code":    code,
 		"message": msg,
 		"status":  status,
+	}
+}
+func Attempt2Error(times checkup.Attempts) (err string) {
+	i := 0
+	for _, v := range times {
+		if i == 0 {
+			err += v.Error
+		} else {
+			err += "\n" + v.Error
+		}
+		return
+	}
+	return
+}
+
+func Result2Map(r []checkup.Result) (data []map[string]interface{}) {
+	for _, v := range r {
+		if !v.Healthy {
+			name, _ := getNamespace(v.Title)
+			ip, port := fetch.Endpoint2ip(v.Endpoint)
+			d := map[string]interface{}{
+				"name":   name,
+				"ip":     ip,
+				"port":   port,
+				"status": v.Status(),
+				"reason": Attempt2Error(v.Times),
+			}
+			data = append(data, d)
+		}
+	}
+	return data
+}
+
+func EData(code int, msg, status string, data []map[string]interface{}) map[string]interface{} {
+	log.Println(msg)
+	return map[string]interface{}{
+		"code":    code,
+		"message": msg,
+		"status":  status,
+		"data":    data,
 	}
 }
 

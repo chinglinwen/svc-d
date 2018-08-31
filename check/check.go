@@ -57,11 +57,7 @@ func Start(conf *config.Config) {
 			//continue
 		}
 
-		if TestProject != "" {
-			conf.Checkers = fetch.ConvertToCheckWithTest(projects, configs, TestProject)
-		} else {
-			conf.Checkers = fetch.ConvertToCheck(projects, configs)
-		}
+		conf.Checkers = fetch.ConvertToCheck(projects, configs)
 		conf.Save()
 
 		log.Println("fetch ok")
