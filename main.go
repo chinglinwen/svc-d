@@ -79,10 +79,15 @@ func main() {
 	e := echo.New()
 	//e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(middleware.Static("/static"))
+	//e.Use(middleware.Static("/data"))
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+	}))
 
 	e.Static("/", "statuspage")
 	e.Static("/data", "data")
+
 	e.GET("/check", checkHandler)
 	e.POST("/notify", notifyHandler)
 

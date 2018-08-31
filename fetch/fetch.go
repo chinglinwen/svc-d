@@ -122,10 +122,13 @@ func (a AProjectIps) Check() error {
 	c := checkup.Checkup{
 		Checkers: checks,
 	}
+	log.Debug.Println("c definition", c)
+
 	r, err := c.Check()
 	if err != nil {
 		return err
 	}
+	log.Debug.Println("result", r)
 	for _, v := range r {
 		if !v.Healthy {
 			return fmt.Errorf("%v, healthy: %v", v.Endpoint, v.Healthy)
