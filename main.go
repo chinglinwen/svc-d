@@ -81,7 +81,8 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Static("/static"))
 
-	e.GET("/", homeHandler)
+	e.Static("/", "statuspage")
+	e.Static("/data", "data")
 	e.GET("/check", checkHandler)
 	e.POST("/notify", notifyHandler)
 

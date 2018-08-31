@@ -12,7 +12,7 @@ checkup.config = {
         // here will be visible to everyone, so use keys with ONLY read access!
         "storage": {
                 // Local file system (Caddy recommended: https://caddyserver.com)
-                "url": "http://localhost:9000/data"
+                "url": "http://localhost:8089/data"
         },
 
         // The text to display along the top bar depending on overall status.

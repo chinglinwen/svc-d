@@ -14,10 +14,10 @@ import (
 	"wen/svc-d/fetch"
 )
 
-func homeHandler(c echo.Context) error {
+/* func homeHandler(c echo.Context) error {
 	//may do redirect later?
 	return c.String(http.StatusOK, "home page")
-}
+} */
 
 // if provided name only, do a active check
 // otherwise do a info register and active check
