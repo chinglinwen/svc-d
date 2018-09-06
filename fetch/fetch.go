@@ -76,7 +76,7 @@ func (p *AProject) GetCheck(config ProjectCheck) (check checkup.Checker) {
 	if config.Type == "http" {
 		c := checkup.HTTPChecker{
 			Name: p.Name + "#" + p.Namespace + "#" + "http", // notify api will use it
-			URL:  "http://" + p.IP + ":" + p.Port,
+			URL:  "http://" + p.IP + ":" + p.Port + config.URI,
 		}
 		if config.StatusCode == 0 {
 			c.UpStatus = 452 //above 500 consider error
@@ -219,22 +219,23 @@ func ConvertToCheck(projects Projects, configs ProjectChecks) []checkup.Checker 
 		}
 
 		var check checkup.Checker
-		if configs[p.Name].Type == "http" {
+		config := configs[p.Name]
+		if config.Type == "http" {
 			c := checkup.HTTPChecker{
 				Name: p.Name + "#" + p.Namespace + "#" + "http", // notify api will use it
-				URL:  "http://" + p.IP + ":" + p.Port,
+				URL:  "http://" + p.IP + ":" + p.Port + config.URI,
 			}
 
-			if configs[p.Name].StatusCode == 0 {
+			if config.StatusCode == 0 {
 				c.UpStatus = 452 //452, //above 500 consider error
 			} else {
-				c.UpStatus = configs[p.Name].StatusCode
+				c.UpStatus = config.StatusCode
 			}
-			if configs[p.Name].Attempts != 0 {
-				c.Attempts = configs[p.Name].Attempts
+			if config.Attempts != 0 {
+				c.Attempts = config.Attempts
 			}
-			if configs[p.Name].MustContain != "" {
-				c.MustContain = configs[p.Name].MustContain
+			if config.MustContain != "" {
+				c.MustContain = config.MustContain
 			}
 			check = c
 		} else {
@@ -242,8 +243,8 @@ func ConvertToCheck(projects Projects, configs ProjectChecks) []checkup.Checker 
 				Name: p.Name + "#" + p.Namespace + "#" + "tcp", // notify api will use it
 				URL:  p.IP + ":" + p.Port,
 			}
-			if configs[p.Name].Timeout != 0 {
-				c.Timeout = time.Duration(configs[p.Name].Timeout) * time.Second
+			if config.Timeout != 0 {
+				c.Timeout = time.Duration(config.Timeout) * time.Second
 			}
 			check = c
 		}

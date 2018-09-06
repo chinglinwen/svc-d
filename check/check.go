@@ -115,13 +115,66 @@ func SimpleCheck(ip, port string) error {
 	return nil
 }
 
-func SimpleCheckLonger(ip, port string, t time.Duration) (err error) {
+// provided for hook-api
+func CheckIPWithConfig(name, ip, port string) error {
+	config, err := fetch.FetchConfig(name)
+	if err != nil {
+		// just log, later return err to the platform?
+		return fmt.Errorf("fetch config for %v, err: %v", name, err)
+	}
+
+	var check checkup.Checker
+	if config.Type == "http" {
+		c := checkup.HTTPChecker{
+			Name: name,
+			URL:  "http://" + ip + ":" + port + config.URI,
+		}
+		if config.StatusCode == 0 {
+			c.UpStatus = 452 //above 500 consider error
+		} else {
+			c.UpStatus = config.StatusCode
+		}
+		if config.Attempts != 0 {
+			c.Attempts = config.Attempts
+		}
+		if config.MustContain != "" {
+			c.MustContain = config.MustContain
+		}
+		check = c
+	} else {
+		c := checkup.TCPChecker{
+			Name: name, // notify api will use it
+			URL:  ip + ":" + port,
+		}
+		if config.Timeout != 0 {
+			c.Timeout = time.Duration(config.Timeout) * time.Second
+		}
+		check = c
+	}
+
+	r, err := check.Check()
+	if err != nil {
+		log.Debug.Printf("%v:%v check failed,err: %v\n", ip, port, err)
+		return err
+	}
+	if !r.Healthy {
+		log.Debug.Printf("%v:%v check failed,result: %v\n", ip, port, r)
+		return fmt.Errorf("%v:%v check failed", ip, port)
+	}
+	return nil
+}
+
+func CheckLonger(name, ip, port string, t time.Duration) (err error) {
 	start := time.Now()
 	var interval = 1
 	var i = 0
 	for {
 		i++
-		err = SimpleCheck(ip, port)
+		err = CheckIPWithConfig(name, ip, port)
+		if err != nil {
+			log.Debug.Printf("check with config err: %v, fallback to simple tcp check\n", err)
+			err = SimpleCheck(ip, port)
+		}
 		if err == nil {
 			return
 		}
