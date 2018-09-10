@@ -172,7 +172,7 @@ func CheckLonger(name, ip, port string, t time.Duration) (err error) {
 		i++
 		err = CheckIPWithConfig(name, ip, port)
 		if err != nil {
-			log.Debug.Printf("check with config err: %v, fallback to simple tcp check\n", err)
+			log.Printf("check with config err: %v, fallback to simple tcp check\n", err)
 			err = SimpleCheck(ip, port)
 		}
 		if err == nil {
@@ -185,7 +185,7 @@ func CheckLonger(name, ip, port string, t time.Duration) (err error) {
 		log.Printf("simple check err: %v\n", err)
 
 		if time.Now().Sub(start) >= t {
-			return fmt.Errorf("simple check timeout, interval: %v, tried: %v times", interval, i)
+			return fmt.Errorf("check longer timeout, interval: %v, tried: %v times", interval, i)
 		}
 		time.Sleep(time.Duration(interval) * time.Millisecond * 100)
 	}
