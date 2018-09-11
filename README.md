@@ -1,45 +1,21 @@
-# Service Checking
+# SVC-d
 
+服务治理
 
+## Arch
 
-naming: svc-d?
+![svc-d](doc/svc-d.jpg)
 
+> 1. alert not implement yet.
 
-
-## API Interaction
-
-### Solution1:
-
-Wukong or kylin or both? -> svc-d
-
-  //register info
-
-  //active check-> get status
-
-svc-d send out service status down
-
-  //wukong,kylin? upstream? 
-
-  //wukong active get app's status ?
-
-### Solution2:
-
-svc-d active fetch data and do the check
-
-fetch periodically (see how fast to do a check first? )
-
-avoid repeat?
-
-have delay ( how long? )
-
-## Checker
+### Checker
 
 | type | struct | demo |
 | ---- | ------ | ---- |
 | http |        |      |
 | tcp  |        |      |
 
-## Example data
+### Example data
 
 {
 
@@ -53,7 +29,7 @@ have delay ( how long? )
 
 }
 
-### HTTPChecker
+#### HTTPChecker
 
 ```json
 (checkup.HTTPChecker) {
@@ -69,7 +45,7 @@ have delay ( how long? )
 ```
 
 
-### TCPChecker
+#### TCPChecker
 
 ```json
 (checkup.TCPChecker) {
@@ -81,10 +57,7 @@ have delay ( how long? )
 }
 ```
 
-
-result
-
-### Notify
+#### Result Notify
 
 ```json
    Notifier: (checkup.Qianbao) {
@@ -97,4 +70,13 @@ result
 
 there will be a notify servicec? it's may just itself ( call itself's api )
 
+## Install
+
+Download release tar file
+
+> change start parameter accordingly
+
+## Update
+
+./update-svc-d.sh
 
