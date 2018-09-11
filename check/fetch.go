@@ -84,6 +84,7 @@ func (p *AProject) GetCheck(config ProjectCheck) (check checkup.Checker) {
 	return
 }
 
+// here the name usually come from platform, so it's underscore type of name
 func (a AProjectIps) Check() (r []checkup.Result, err error) {
 	if len(a.IPs) == 0 {
 		err = fmt.Errorf("no ip found for project: %v", a.Name)

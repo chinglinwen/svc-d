@@ -96,9 +96,9 @@ func SimpleCheck(ip, port string) error {
 	return nil
 }
 
-// provided for hook-api
+// provided for hook-api, so here, it usually use wk name, the underscore one
 func CheckIPWithConfig(name, ip, port string) error {
-	config, err := FetchConfig(name)
+	config, err := FetchConfigByK8sName(name)
 	if err != nil {
 		// just log, later return err to the platform?
 		return fmt.Errorf("fetch config for %v, err: %v", name, err)

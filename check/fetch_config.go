@@ -33,6 +33,15 @@ type ConfigBody struct {
 	Data ProjectCheck `json:"data,omitempty"`
 }
 
+func FetchConfigByK8sName(name string) (config ProjectCheck, err error) {
+	appname, err := GetProjectName(name)
+	if err != nil {
+		return
+	}
+	return FetchConfig(appname)
+}
+
+// the name need to be underscore one, say ops_test
 func FetchConfig(name string) (config ProjectCheck, err error) {
 	var p ConfigBody
 	resp, e := resty.SetRetryCount(3).
