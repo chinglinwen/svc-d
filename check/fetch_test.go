@@ -1,4 +1,4 @@
-package fetch
+package check
 
 import (
 	"encoding/json"

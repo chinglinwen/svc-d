@@ -21,7 +21,6 @@ import (
 	"github.com/chinglinwen/log"
 
 	"wen/svc-d/config"
-	"wen/svc-d/fetch"
 )
 
 var (
@@ -46,18 +45,18 @@ func Start(conf *config.Config) {
 		// empty it for new fetch
 		conf.Checkers = []checkup.Checker{}
 
-		projects, err := fetch.Fetchs()
+		projects, err := Fetchs()
 		if err != nil {
 			log.Println("fetch upstream error", err)
 			continue
 		}
-		configs, err := fetch.FetchConfigs()
+		configs, err := FetchConfigs()
 		if err != nil {
 			log.Println("fetch config error", err)
 			//continue
 		}
 
-		conf.Checkers = fetch.ConvertToCheck(projects, configs)
+		conf.Checkers = ConvertToCheck(projects, configs)
 		conf.Save()
 
 		log.Println("fetch ok")
@@ -81,24 +80,6 @@ EXIT:
 	log.Println("background check stopped")
 }
 
-/* type setting struct {
-	checkonetime bool
-	testproject  string
-}
-type Option func(*setting)
-
-func SetTestProject(t string) Option {
-	return func(c *setting) {
-		c.testproject = t
-	}
-}
-
-func SetCheckOneTime(a bool) Option {
-	return func(c *setting) {
-		c.checkonetime = a
-	}
-} */
-
 func SimpleCheck(ip, port string) error {
 	check := checkup.TCPChecker{
 		URL: ip + ":" + port,
@@ -117,40 +98,13 @@ func SimpleCheck(ip, port string) error {
 
 // provided for hook-api
 func CheckIPWithConfig(name, ip, port string) error {
-	config, err := fetch.FetchConfig(name)
+	config, err := FetchConfig(name)
 	if err != nil {
 		// just log, later return err to the platform?
 		return fmt.Errorf("fetch config for %v, err: %v", name, err)
 	}
 
-	var check checkup.Checker
-	if config.Type == "http" {
-		c := checkup.HTTPChecker{
-			Name: name,
-			URL:  "http://" + ip + ":" + port + config.URI,
-		}
-		if config.StatusCode == 0 {
-			c.UpStatus = 452 //above 500 consider error
-		} else {
-			c.UpStatus = config.StatusCode
-		}
-		if config.Attempts != 0 {
-			c.Attempts = config.Attempts
-		}
-		if config.MustContain != "" {
-			c.MustContain = config.MustContain
-		}
-		check = c
-	} else {
-		c := checkup.TCPChecker{
-			Name: name, // notify api will use it
-			URL:  ip + ":" + port,
-		}
-		if config.Timeout != 0 {
-			c.Timeout = time.Duration(config.Timeout) * time.Second
-		}
-		check = c
-	}
+	check := GetCheckWithConfig(name, ip, port, config)
 
 	r, err := check.Check()
 	if err != nil {

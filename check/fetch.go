@@ -1,5 +1,5 @@
 // periodically fetch checks info
-package fetch
+package check
 
 // call upstream api, transformation to  checkers
 // how to know if it's http or tcp?
@@ -17,7 +17,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/chinglinwen/checkup"
 	"github.com/chinglinwen/log"
@@ -73,33 +72,15 @@ type AProjectIps struct {
 
 // many aproject mapp one project, so we pass config instead
 func (p *AProject) GetCheck(config ProjectCheck) (check checkup.Checker) {
+
+	var name string
 	if config.Type == "http" {
-		c := checkup.HTTPChecker{
-			Name: p.Name + "#" + p.Namespace + "#" + "http", // notify api will use it
-			URL:  "http://" + p.IP + ":" + p.Port + config.URI,
-		}
-		if config.StatusCode == 0 {
-			c.UpStatus = 452 //above 500 consider error
-		} else {
-			c.UpStatus = config.StatusCode
-		}
-		if config.Attempts != 0 {
-			c.Attempts = config.Attempts
-		}
-		if config.MustContain != "" {
-			c.MustContain = config.MustContain
-		}
-		check = c
+		name = p.Name + "#" + p.Namespace + "#" + "http"
 	} else {
-		c := checkup.TCPChecker{
-			Name: p.Name + "#" + p.Namespace + "#" + "tcp", // notify api will use it
-			URL:  p.IP + ":" + p.Port,
-		}
-		if config.Timeout != 0 {
-			c.Timeout = time.Duration(config.Timeout) * time.Second
-		}
-		check = c
+		name = p.Name + "#" + p.Namespace + "#" + "tcp"
 	}
+	check = GetCheckWithConfig(name, p.IP, p.Port, config)
+
 	return
 }
 
@@ -218,36 +199,14 @@ func ConvertToCheck(projects Projects, configs ProjectChecks) []checkup.Checker 
 			continue
 		}
 
-		var check checkup.Checker
+		var name string
 		config := configs[p.Name]
 		if config.Type == "http" {
-			c := checkup.HTTPChecker{
-				Name: p.Name + "#" + p.Namespace + "#" + "http", // notify api will use it
-				URL:  "http://" + p.IP + ":" + p.Port + config.URI,
-			}
-
-			if config.StatusCode == 0 {
-				c.UpStatus = 452 //452, //above 500 consider error
-			} else {
-				c.UpStatus = config.StatusCode
-			}
-			if config.Attempts != 0 {
-				c.Attempts = config.Attempts
-			}
-			if config.MustContain != "" {
-				c.MustContain = config.MustContain
-			}
-			check = c
+			name = p.Name + "#" + p.Namespace + "#" + "http"
 		} else {
-			c := checkup.TCPChecker{
-				Name: p.Name + "#" + p.Namespace + "#" + "tcp", // notify api will use it
-				URL:  p.IP + ":" + p.Port,
-			}
-			if config.Timeout != 0 {
-				c.Timeout = time.Duration(config.Timeout) * time.Second
-			}
-			check = c
+			name = p.Name + "#" + p.Namespace + "#" + "tcp"
 		}
+		check := GetCheckWithConfig(name, p.IP, p.Port, config)
 
 		//spew.Dump("check", checks)
 		//log.Printf("project %v added\n", p.Project)

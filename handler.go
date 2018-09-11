@@ -11,7 +11,7 @@ import (
 	"github.com/chinglinwen/checkup"
 	"github.com/labstack/echo"
 
-	"wen/svc-d/fetch"
+	"wen/svc-d/check"
 )
 
 /* func homeHandler(c echo.Context) error {
@@ -31,7 +31,7 @@ func checkHandler(c echo.Context) error {
 		return c.JSONPretty(400, E(1, "appname not provided", "error"), " ")
 	}
 
-	p, err := fetch.Fetch(env, appname)
+	p, err := check.Fetch(env, appname)
 	if err != nil {
 		e := fmt.Sprintf("fetch project err: %v", err)
 		return c.JSONPretty(400, E(1, e, "error"), " ")
@@ -87,7 +87,7 @@ func Result2Map(r []checkup.Result) (data []map[string]interface{}) {
 	for _, v := range r {
 		if !v.Healthy {
 			name, _ := getNamespace(v.Title)
-			ip, port := fetch.Endpoint2ip(v.Endpoint)
+			ip, port := check.Endpoint2ip(v.Endpoint)
 			d := map[string]interface{}{
 				"name":   name,
 				"ip":     ip,

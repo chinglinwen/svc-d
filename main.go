@@ -9,7 +9,6 @@ import (
 	"wen/hook-api/upstream"
 	"wen/svc-d/check"
 	"wen/svc-d/config"
-	"wen/svc-d/fetch"
 
 	"github.com/chinglinwen/checkup"
 	"github.com/chinglinwen/log"
@@ -57,10 +56,10 @@ func init() {
 		log.Println("check one time only")
 		check.CheckOneTime = *checkonetime
 	}
-	fetch.Env = *env
-	fetch.DockerOnly = *dockerOnly
+	check.Env = *env
+	check.DockerOnly = *dockerOnly
 
-	fetch.Init(*upstreamBase)
+	check.Init(*upstreamBase)
 	upstream.Init(*upstreamBase)
 	log.Println("using upstream", *upstreamBase)
 }
