@@ -1,0 +1,120 @@
+# github.com/ashwanthkumar/slack-go-webhook v0.0.0-20180319063640-eb0e8e892f3a
+github.com/ashwanthkumar/slack-go-webhook
+# github.com/aws/aws-sdk-go v1.15.37
+github.com/aws/aws-sdk-go/aws
+github.com/aws/aws-sdk-go/aws/client
+github.com/aws/aws-sdk-go/aws/credentials
+github.com/aws/aws-sdk-go/aws/session
+github.com/aws/aws-sdk-go/service/iam
+github.com/aws/aws-sdk-go/service/s3
+github.com/aws/aws-sdk-go/aws/awserr
+github.com/aws/aws-sdk-go/aws/endpoints
+github.com/aws/aws-sdk-go/internal/sdkio
+github.com/aws/aws-sdk-go/aws/client/metadata
+github.com/aws/aws-sdk-go/aws/request
+github.com/aws/aws-sdk-go/internal/sdkrand
+github.com/aws/aws-sdk-go/internal/shareddefaults
+github.com/aws/aws-sdk-go/aws/corehandlers
+github.com/aws/aws-sdk-go/aws/credentials/stscreds
+github.com/aws/aws-sdk-go/aws/csm
+github.com/aws/aws-sdk-go/aws/defaults
+github.com/aws/aws-sdk-go/aws/awsutil
+github.com/aws/aws-sdk-go/aws/signer/v4
+github.com/aws/aws-sdk-go/private/protocol
+github.com/aws/aws-sdk-go/private/protocol/query
+github.com/aws/aws-sdk-go/private/protocol/eventstream
+github.com/aws/aws-sdk-go/private/protocol/eventstream/eventstreamapi
+github.com/aws/aws-sdk-go/private/protocol/rest
+github.com/aws/aws-sdk-go/private/protocol/restxml
+github.com/aws/aws-sdk-go/service/sts
+github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds
+github.com/aws/aws-sdk-go/aws/credentials/endpointcreds
+github.com/aws/aws-sdk-go/aws/ec2metadata
+github.com/aws/aws-sdk-go/private/protocol/query/queryutil
+github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil
+github.com/aws/aws-sdk-go/internal/sdkuri
+# github.com/chinglinwen/checkup v0.3.1
+github.com/chinglinwen/checkup
+# github.com/chinglinwen/log v0.0.0-20180802093412-402fdc33bf76
+github.com/chinglinwen/log
+# github.com/dgrijalva/jwt-go v3.2.0+incompatible
+github.com/dgrijalva/jwt-go
+# github.com/fatih/color v1.7.0
+github.com/fatih/color
+# github.com/go-ini/ini v1.25.4
+github.com/go-ini/ini
+# github.com/golang/protobuf v1.2.0
+github.com/golang/protobuf/proto
+# github.com/google/go-github v17.0.0+incompatible
+github.com/google/go-github/github
+# github.com/google/go-querystring v1.0.0
+github.com/google/go-querystring/query
+# github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8
+github.com/jmespath/go-jmespath
+# github.com/jmoiron/sqlx v0.0.0-20180614180643-0dae4fefe7c0
+github.com/jmoiron/sqlx
+github.com/jmoiron/sqlx/reflectx
+# github.com/labstack/echo v3.2.1+incompatible
+github.com/labstack/echo
+github.com/labstack/echo/middleware
+# github.com/labstack/gommon v0.2.7
+github.com/labstack/gommon/color
+github.com/labstack/gommon/log
+github.com/labstack/gommon/bytes
+github.com/labstack/gommon/random
+# github.com/lib/pq v1.0.0
+github.com/lib/pq
+github.com/lib/pq/oid
+# github.com/mattn/go-colorable v0.0.9
+github.com/mattn/go-colorable
+# github.com/mattn/go-isatty v0.0.4
+github.com/mattn/go-isatty
+# github.com/miekg/dns v1.0.9
+github.com/miekg/dns
+# github.com/moul/http2curl v0.0.0-20170919181001-9ac6cf4d929b
+github.com/moul/http2curl
+# github.com/parnurzeal/gorequest v0.2.15
+github.com/parnurzeal/gorequest
+# github.com/pkg/errors v0.8.0
+github.com/pkg/errors
+# github.com/valyala/bytebufferpool v1.0.0
+github.com/valyala/bytebufferpool
+# github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4
+github.com/valyala/fasttemplate
+# golang.org/x/crypto v0.0.0-20180910181607-0e37d006457b
+golang.org/x/crypto/acme/autocert
+golang.org/x/crypto/ed25519
+golang.org/x/crypto/acme
+golang.org/x/crypto/ed25519/internal/edwards25519
+# golang.org/x/net v0.0.0-20180911220305-26e67e76b6c3
+golang.org/x/net/ipv4
+golang.org/x/net/ipv6
+golang.org/x/net/context
+golang.org/x/net/publicsuffix
+golang.org/x/net/bpf
+golang.org/x/net/internal/iana
+golang.org/x/net/internal/socket
+golang.org/x/net/context/ctxhttp
+# golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be
+golang.org/x/oauth2
+golang.org/x/oauth2/internal
+# golang.org/x/sys v0.0.0-20180918153733-ee1b12c67af4
+golang.org/x/sys/unix
+# google.golang.org/appengine v1.2.0
+google.golang.org/appengine/urlfetch
+google.golang.org/appengine/internal
+google.golang.org/appengine/internal/urlfetch
+google.golang.org/appengine/internal/base
+google.golang.org/appengine/internal/datastore
+google.golang.org/appengine/internal/log
+google.golang.org/appengine/internal/remote_api
+# gopkg.in/resty.v1 v1.9.1
+gopkg.in/resty.v1
+# wen/hook-api/upstream v0.0.0 => ../hook-api/upstream
+wen/hook-api/upstream
+# wen/svc-d/check v0.0.0 => ../svc-d/check
+wen/svc-d/check
+# wen/svc-d/config v0.0.0 => ../svc-d/config
+wen/svc-d/config
+# wen/svc-d/notice v0.0.0 => ../svc-d/notice
+wen/svc-d/notice

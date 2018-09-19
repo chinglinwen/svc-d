@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/go-resty/resty"
+	"gopkg.in/resty.v1"
 )
 
 var (
@@ -25,6 +25,9 @@ type ProjectCheck struct {
 	Timeout        int    `json:"timeout"`
 	Type           string `json:"type"` // http or tcp
 	URI            string `json:"uri"`
+
+	AutoDisable   bool   `json:"auto_disable"` // auto disable or not
+	AlertReceiver string `json:"alert_receiver"`
 }
 
 type ConfigBody struct {

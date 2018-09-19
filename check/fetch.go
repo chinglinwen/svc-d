@@ -20,7 +20,7 @@ import (
 
 	"github.com/chinglinwen/checkup"
 	"github.com/chinglinwen/log"
-	"github.com/go-resty/resty"
+	"gopkg.in/resty.v1"
 )
 
 var (

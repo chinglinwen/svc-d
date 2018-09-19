@@ -12,6 +12,7 @@ import (
 	"github.com/labstack/echo"
 
 	"wen/svc-d/check"
+	"wen/svc-d/notice"
 )
 
 /* func homeHandler(c echo.Context) error {
@@ -120,26 +121,70 @@ func notifyHandler(c echo.Context) error {
 	log.Println("notify: ", r)
 
 	name, ns := getNamespace(r.Title)
+	endpoint := r.Endpoint
 
 	if *testproject != "" {
 		if *testproject != name {
-			e := fmt.Sprintf("notify:  %v %v, it's not test project, skip change", r.Title, r.Endpoint)
+			e := fmt.Sprintf("notify:  %v %v, it's not test project, skip change", name, endpoint)
 			return c.JSONPretty(http.StatusOK, E(0, e, "error"), " ")
 		}
 	}
 
+	// get config from project center.
+	config, err := check.FetchConfig(name)
+	if err != nil {
+		log.Println("fetch config for notify err", err)
+	}
+
+	content := fmt.Sprintf("%v %v, changed upstream state", name, endpoint)
+
+	// do send alert here, if receiver is not empty
+	// things come to here is not ok.
+	if config.AlertReceiver != "" {
+		reply, err := notice.Send(config.AlertReceiver, content)
+		if err != nil {
+			log.Printf("send alert err: %v, resp: %v\n", err, reply)
+		} else {
+			log.Printf("send alert ok, resp: %v\n", reply)
+		}
+	}
+
+	// extra alert if alertall is setted.
+	if *alertAll {
+		reply, err := notice.Send(*defaultReceiver, content)
+		if err != nil {
+			log.Printf("send alertall err: %v, resp: %v\n", err, reply)
+		} else {
+			log.Printf("send alertall ok, resp: %v\n", reply)
+		}
+	}
+
+	if !config.AutoDisable {
+		msg := "no setting for auto change state for upstream"
+		return c.JSONPretty(http.StatusOK, E(0, msg, "ok"), " ")
+	}
+
 	ok, err := upstream.ChangeState(r.Endpoint, name, ns, "0")
 	if err != nil {
-		e := fmt.Sprintf("notify:  %v %v, change upstream state, err: %v", r.Title, r.Endpoint, err)
+		// do send alert here, things err
+		content := fmt.Sprintf("%v %v, change upstream state err: %v", name, endpoint, err)
+		reply, err := notice.Send(*defaultReceiver, content)
+		if err != nil {
+			log.Printf("send alert err: %v, resp: %v\n", err, reply)
+		} else {
+			log.Printf("send alert ok, resp: %v\n", reply)
+		}
+
+		e := fmt.Sprintf("notify:  %v %v, change upstream state, err: %v", name, endpoint, err)
 		return c.JSONPretty(400, E(2, e, "error"), " ")
 	}
 
 	if ok == false {
-		e := fmt.Sprintf("notify:  %v %v, change upstream state failure", r.Title, r.Endpoint)
+		e := fmt.Sprintf("notify:  %v %v, change upstream state failure", name, endpoint)
 		return c.JSONPretty(400, E(3, e, "error"), " ")
 	}
 
-	msg := fmt.Sprintf("notify:  %v %v, change upstream state ok", r.Title, r.Endpoint)
+	msg := fmt.Sprintf("notify:  %v %v, change upstream state ok", name, endpoint)
 	return c.JSONPretty(http.StatusOK, E(0, msg, "ok"), " ")
 }
 

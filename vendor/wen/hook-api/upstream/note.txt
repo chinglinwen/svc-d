@@ -1,0 +1,53 @@
+just have a continue check by cloudprobe ( say two domain )
+
+up and down ip ( all of ip is ok? ), it should always up
+
+really do monitor down ip?
+  //ip may change quickly, but service is not
+
+    //even the add need a check first? just a tcp check? fail then wait? wait 5 minutes?
+    //hook api call check?
+
+    //why service sometimes down?
+
+how to easily test it, function and performance?
+
+just use fs pod ip, grep the content to see if it's get the correct ip
+
+how long to see the effect? 1 seconds?
+
+test delete all? ( it shouldn't happen to have such a request first )
+  //if it just all ip unavailable(try keep k8s not into that)
+  // no need to test this
+
+have two deploy, so two domain?
+
+how to get the metrics, metrics only about performance? also how does it quick into effect?
+
+see how fast it changed? ( detect the content? )
+  //by curl?
+
+
+how to let it auto test for a long time?
+
+1. add domain into hosts file
+1. setup nginx and upstream
+1. add init ip to the upstream
+1. do a change (update deploy), grep the content? if it success, see how long?
+  //ip is dynamic, it's hard to grep content? to verify
+
+    //https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/#define-poststart-and-prestop-handlers
+
+1. emulate many ( performance? ), create many deploy? create many domain?
+  //by benchmark? or just simply create a deploy and many deploy(how to match domain? auto add?)
+    //just create fifty by hands? with some rules? to domain name
+      //use domain name as deploy name, so we know the domain name now(can auto add)
+
+also measure the service should always up ( by cloudprobe )
+
+
+see how it compare to watch?
+also emulate apiserver down? (float?)
+
+try use pre-env?
+use namespace test

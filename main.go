@@ -26,6 +26,9 @@ var (
 	checkonetime     = flag.Bool("once", false, "check only once")
 	dockerOnly       = flag.Bool("docker", true, "check docker only")
 
+	defaultReceiver = flag.String("default-receiver", "wenzhenglin", "default receiver")
+	alertAll        = flag.Bool("alertall", true, "alert all changes to default receiver if setted")
+
 	upstreamBase = flag.String("upstream", "http://upstream-test.sched.qianbao-inc.com:8010", "upstream base api url")
 )
 
