@@ -80,6 +80,12 @@ func (c Checkup) Check() ([]Result, error) {
 			}
 			fmt.Printf("checked %v, %v %v%v\n", i, results[i].Title, results[i].Endpoint, msg)
 
+			if AlertAll {
+				content := results[i].Title + " " + results[i].Endpoint
+				status := fmt.Sprintf("%v", results[i].Status())
+				// send alert, peer service will do prevent repeat based on status change
+				Send(content, status, "10m")
+			}
 			<-throttle
 			wg.Done()
 		}(i, checker)

@@ -3,7 +3,7 @@ module wen/svc-d
 require (
 	github.com/ashwanthkumar/slack-go-webhook v0.0.0-20180319063640-eb0e8e892f3a // indirect
 	github.com/aws/aws-sdk-go v1.15.37 // indirect
-	github.com/chinglinwen/checkup v0.3.1
+	github.com/chinglinwen/checkup v0.3.2
 	github.com/chinglinwen/log v0.0.0-20180802093412-402fdc33bf76
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fatih/color v1.7.0 // indirect
@@ -32,7 +32,7 @@ require (
 
 	wen/svc-d/check v0.0.0
 	wen/svc-d/config v0.0.0
-	wen/svc-d/notice v0.0.0
+	wen/svc-d/notice v0.0.1
 )
 
 replace wen/svc-d/check => ../svc-d/check

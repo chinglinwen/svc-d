@@ -33,7 +33,7 @@ github.com/aws/aws-sdk-go/aws/ec2metadata
 github.com/aws/aws-sdk-go/private/protocol/query/queryutil
 github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil
 github.com/aws/aws-sdk-go/internal/sdkuri
-# github.com/chinglinwen/checkup v0.3.1
+# github.com/chinglinwen/checkup v0.3.2-0.20180920070402-38ff72a38324
 github.com/chinglinwen/checkup
 # github.com/chinglinwen/log v0.0.0-20180802093412-402fdc33bf76
 github.com/chinglinwen/log
@@ -116,5 +116,5 @@ wen/hook-api/upstream
 wen/svc-d/check
 # wen/svc-d/config v0.0.0 => ../svc-d/config
 wen/svc-d/config
-# wen/svc-d/notice v0.0.0 => ../svc-d/notice
+# wen/svc-d/notice v0.0.1 => ../svc-d/notice
 wen/svc-d/notice

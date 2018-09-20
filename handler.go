@@ -140,8 +140,10 @@ func notifyHandler(c echo.Context) error {
 
 	// do send alert here, if receiver is not empty
 	// things come to here is not ok.
+
+	// no need for now
 	if config.AlertReceiver != "" {
-		reply, err := notice.Send(config.AlertReceiver, content)
+		reply, err := notice.Send(config.AlertReceiver, content, "down", "10m")
 		if err != nil {
 			log.Printf("send alert err: %v, resp: %v\n", err, reply)
 		} else {
@@ -150,14 +152,15 @@ func notifyHandler(c echo.Context) error {
 	}
 
 	// extra alert if alertall is setted.
-	if *alertAll {
+	// will do alert in checkup instead
+	/* 	if *alertAll {
 		reply, err := notice.Send(*defaultReceiver, content)
 		if err != nil {
 			log.Printf("send alertall err: %v, resp: %v\n", err, reply)
 		} else {
 			log.Printf("send alertall ok, resp: %v\n", reply)
 		}
-	}
+	} */
 
 	if !config.AutoDisable {
 		msg := "no setting for auto change state for upstream"
@@ -168,7 +171,7 @@ func notifyHandler(c echo.Context) error {
 	if err != nil {
 		// do send alert here, things err
 		content := fmt.Sprintf("%v %v, change upstream state err: %v", name, endpoint, err)
-		reply, err := notice.Send(*defaultReceiver, content)
+		reply, err := notice.Send(*defaultReceiver, content, "error", "")
 		if err != nil {
 			log.Printf("send alert err: %v, resp: %v\n", err, reply)
 		} else {

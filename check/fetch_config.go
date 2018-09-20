@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	ProjectCenterBase   = flag.String("center-api", "http://ops.qianbao-inc.com/api/", "project center all config api base url")
+	ProjectCenterBase   = flag.String("center-api", "http://ops.qianbao-inc.com/api", "project center all config api base url")
 	ProjectCenterAllAPI = *ProjectCenterBase + "/get_detect_projects"
 	ProjectCenterAPI    = *ProjectCenterBase + "/get_detect_project"
 	projectDockerInfo   = *ProjectCenterBase + "/project_docker_info"

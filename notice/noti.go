@@ -12,7 +12,8 @@ var (
 	noticeBase = flag.String("noticeurl", "http://noti.wk.qianbao-inc.com", "notice api base url")
 )
 
-func Send(receiver, message string) (reply string, err error) {
+// if no need cache, leave expire empty, then will send every time.
+func Send(receiver, message, status, expire string) (reply string, err error) {
 	r := strings.NewReplacer("\"", " ", "{", "", "}", "")
 	message = r.Replace(message)
 
@@ -20,6 +21,8 @@ func Send(receiver, message string) (reply string, err error) {
 		SetQueryParams(map[string]string{
 			"user":    receiver,
 			"content": message,
+			"status":  status,
+			"expire":  expire,
 		}).
 		Get(*noticeBase)
 

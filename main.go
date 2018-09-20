@@ -9,6 +9,7 @@ import (
 	"wen/hook-api/upstream"
 	"wen/svc-d/check"
 	"wen/svc-d/config"
+	_ "wen/svc-d/notice" // for flag config
 
 	"github.com/chinglinwen/checkup"
 	"github.com/chinglinwen/log"
@@ -65,6 +66,9 @@ func init() {
 	check.Init(*upstreamBase)
 	upstream.Init(*upstreamBase)
 	log.Println("using upstream", *upstreamBase)
+
+	checkup.AlertAll = *alertAll
+	checkup.DefaultReceiver = *defaultReceiver
 }
 
 // define a global variable
