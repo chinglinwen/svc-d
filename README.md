@@ -6,7 +6,6 @@
 
 ![svc-d](doc/svc-d.jpg)
 
-> 1. alert not implement yet.
 
 ### Checker
 
