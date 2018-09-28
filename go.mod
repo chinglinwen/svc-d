@@ -9,7 +9,9 @@ require (
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/google/go-github v17.0.0+incompatible // indirect
 	github.com/google/go-querystring v1.0.0 // indirect
+	github.com/google/gops v0.3.5
 	github.com/jmoiron/sqlx v0.0.0-20180614180643-0dae4fefe7c0 // indirect
+	github.com/kardianos/osext v0.0.0-20170510131534-ae77be60afb1 // indirect
 	github.com/labstack/echo v3.2.1+incompatible
 	github.com/labstack/gommon v0.2.7 // indirect
 	github.com/lib/pq v1.0.0 // indirect

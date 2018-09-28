@@ -41,7 +41,7 @@ func init() {
 	flag.Parse()
 	conf = config.New("config.json", *env) //try the item, project based ?  why not just name?
 
-	_ = os.Mkdir("data", os.ModeDir)
+	_ = os.Mkdir("data", 0775)
 	conf.Notifier = checkup.Qianbao{
 		Username: "wen",
 		Channel:  "http://localhost:" + *port + "/notify",
