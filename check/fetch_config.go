@@ -26,8 +26,8 @@ type ProjectCheck struct {
 	Type           string `json:"type"` // http or tcp
 	URI            string `json:"uri"`
 
-	AutoDisable   bool   `json:"auto_disable"` // auto disable or not
-	AlertReceiver string `json:"alert_receiver"`
+	AutoDisable   string `json:"auto_disable"`   // on or off, auto disable or not
+	AlertReceiver string `json:"alert_receiver"` // on or off
 }
 
 type ConfigBody struct {

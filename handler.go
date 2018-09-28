@@ -162,7 +162,7 @@ func notifyHandler(c echo.Context) error {
 		}
 	} */
 
-	if !config.AutoDisable {
+	if config.AutoDisable != "on" {
 		msg := "no setting for auto change state for upstream"
 		return c.JSONPretty(http.StatusOK, E(0, msg, "ok"), " ")
 	}
