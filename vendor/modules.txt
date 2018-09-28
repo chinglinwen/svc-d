@@ -33,8 +33,9 @@ github.com/aws/aws-sdk-go/aws/ec2metadata
 github.com/aws/aws-sdk-go/private/protocol/query/queryutil
 github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil
 github.com/aws/aws-sdk-go/internal/sdkuri
-# github.com/chinglinwen/checkup v0.3.2-0.20180920070402-38ff72a38324
+# github.com/chinglinwen/checkup v0.3.2
 github.com/chinglinwen/checkup
+github.com/chinglinwen/checkup/cache
 # github.com/chinglinwen/log v0.0.0-20180802093412-402fdc33bf76
 github.com/chinglinwen/log
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -49,11 +50,17 @@ github.com/golang/protobuf/proto
 github.com/google/go-github/github
 # github.com/google/go-querystring v1.0.0
 github.com/google/go-querystring/query
+# github.com/google/gops v0.3.5
+github.com/google/gops/agent
+github.com/google/gops/internal
+github.com/google/gops/signal
 # github.com/jmespath/go-jmespath v0.0.0-20160202185014-0b12d6b521d8
 github.com/jmespath/go-jmespath
 # github.com/jmoiron/sqlx v0.0.0-20180614180643-0dae4fefe7c0
 github.com/jmoiron/sqlx
 github.com/jmoiron/sqlx/reflectx
+# github.com/kardianos/osext v0.0.0-20170510131534-ae77be60afb1
+github.com/kardianos/osext
 # github.com/labstack/echo v3.2.1+incompatible
 github.com/labstack/echo
 github.com/labstack/echo/middleware
@@ -75,8 +82,12 @@ github.com/miekg/dns
 github.com/moul/http2curl
 # github.com/parnurzeal/gorequest v0.2.15
 github.com/parnurzeal/gorequest
+# github.com/patrickmn/go-cache v2.1.0+incompatible
+github.com/patrickmn/go-cache
 # github.com/pkg/errors v0.8.0
 github.com/pkg/errors
+# github.com/sevenNt/echo-pprof v0.1.0
+github.com/sevenNt/echo-pprof
 # github.com/valyala/bytebufferpool v1.0.0
 github.com/valyala/bytebufferpool
 # github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4
