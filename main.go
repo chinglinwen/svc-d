@@ -15,6 +15,8 @@ import (
 	"github.com/chinglinwen/log"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+
+	"github.com/sevenNt/echo-pprof"
 )
 
 var (
@@ -93,6 +95,10 @@ func main() {
 	//e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	//e.Use(middleware.Static("/data"))
+
+	// automatically add routers for net/http/pprof
+	// e.g. /debug/pprof, /debug/pprof/heap, etc.
+	echopprof.Wrap(e)
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
