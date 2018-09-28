@@ -73,7 +73,7 @@ func Start(conf *config.Config) {
 			log.Println("check one time only, exit the loop")
 			goto EXIT
 		}
-		sleeptime := CheckInterval - now.Sub(prev)
+		sleeptime := CheckInterval - time.Now().Sub(prev)
 		log.Printf("going sleep for %v\n\n", sleeptime)
 		time.Sleep(sleeptime) // a negative one will return immediately
 	}
