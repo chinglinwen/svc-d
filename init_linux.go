@@ -21,8 +21,12 @@ func init() {
 			switch log.GetLevel() {
 			case "debug":
 				level = "info"
+				gopsStop()
+				log.Println("stopping gops")
 			default:
 				level = "debug"
+				gopsStart()
+				log.Println("started gops")
 			}
 			log.SetLevel(level)
 			log.Println("got signal, set log level to ", level)

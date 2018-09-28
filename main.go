@@ -21,7 +21,7 @@ var (
 	conf             *config.Config
 	env              = flag.String("env", "qa", "env includes (qa,pre,pro)")
 	port             = flag.String("p", "8089", "port")
-	checkInterval    = flag.Int("i", 10, "check interval in seconds")
+	checkInterval    = flag.String("i", "10s", "check interval (s second,m minutes)")
 	concurrentChecks = flag.Int("cc", 100, "number of concurrent checks")
 	testproject      = flag.String("test", "", "test project name")
 	checkonetime     = flag.Bool("once", false, "check only once")
@@ -53,7 +53,12 @@ func init() {
 	conf.ConcurrentChecks = *concurrentChecks
 	conf.Save()
 
-	check.CheckInterval = *checkInterval
+	var err error
+	check.CheckInterval, err = time.ParseDuration(*checkInterval)
+	if err != nil {
+		log.Fatalf("parse checkInterval duration error for %v", *checkInterval)
+	}
+
 	if *testproject != "" {
 		log.Printf("test for %v project only\n", *testproject)
 		check.TestProject = *testproject

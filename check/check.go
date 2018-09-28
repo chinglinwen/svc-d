@@ -24,23 +24,22 @@ import (
 )
 
 var (
-	CheckOneTime  bool
-	TestProject   string
-	CheckInterval int
+	CheckOneTime bool
+	TestProject  string
+
+	CheckInterval time.Duration
 )
 
 // start backend check
 func Start(conf *config.Config) {
 	log.Println("started fetch in the background")
 
-	var (
-		ticker = time.NewTicker(time.Duration(CheckInterval) * time.Second)
-		//stop   *time.Ticker
-		now  time.Time
-		prev time.Time
-	)
+	now := time.Now()
+	prev := now
 
-	for ; ; now = <-ticker.C {
+	for {
+		now = time.Now()
+
 		log.Printf("starting fetch at %v, last time elapsed %v\n", now.Format(time.UnixDate), now.Sub(prev))
 		// empty it for new fetch
 		conf.Checkers = []checkup.Checker{}
@@ -66,15 +65,17 @@ func Start(conf *config.Config) {
 			log.Println("background check error", err)
 			continue
 		}
-		log.Printf("background check ok\n\n")
+		log.Printf("background check ok\n")
 
 		prev = now
 
 		if CheckOneTime {
 			log.Println("check one time only, exit the loop")
-			ticker.Stop()
 			goto EXIT
 		}
+		sleeptime := CheckInterval - now.Sub(prev)
+		log.Printf("going sleep for %v\n\n", sleeptime)
+		time.Sleep(sleeptime) // a negative one will return immediately
 	}
 EXIT:
 	log.Println("background check stopped")

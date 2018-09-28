@@ -6,10 +6,14 @@ import (
 	"github.com/google/gops/agent"
 )
 
-func init() {
+func gopsStart() {
 	if err := agent.Listen(agent.Options{
 		ShutdownCleanup: true, // automatically closes on os.Interrupt
 	}); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func gopsStop() {
+	agent.Close()
 }
