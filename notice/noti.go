@@ -17,7 +17,7 @@ func Send(receiver, message, status, expire string) (reply string, err error) {
 	r := strings.NewReplacer("\"", " ", "{", "", "}", "")
 	message = r.Replace(message)
 
-	resp, e := resty.SetRetryCount(3).R().
+	resp, e := Client().R().
 		SetQueryParams(map[string]string{
 			"user":    receiver,
 			"content": message,
@@ -32,4 +32,10 @@ func Send(receiver, message, status, expire string) (reply string, err error) {
 	}
 	reply = string(resp.Body())
 	return
+}
+
+var client = resty.New().SetRetryCount(3)
+
+func Client() *resty.Client {
+	return client
 }

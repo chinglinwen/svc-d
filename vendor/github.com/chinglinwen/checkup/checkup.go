@@ -125,16 +125,22 @@ func (c Checkup) CheckAndStore() error {
 	}
 	results, err := c.Check()
 	if err != nil {
+		fmt.Println("check err", err)
 		return err
 	}
 	//log.Println("checkandstore ", results, err)
 	err = c.Storage.Store(results)
 	if err != nil {
+		fmt.Println("store err", err)
 		return err
 	}
 
 	if m, ok := c.Storage.(Maintainer); ok {
-		return m.Maintain()
+		err = m.Maintain()
+		if err != nil {
+			fmt.Println("maintain err", err)
+			return err
+		}
 	}
 
 	return nil

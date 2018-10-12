@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-
-	"gopkg.in/resty.v1"
 )
 
 var (
@@ -47,7 +45,7 @@ func FetchConfigByK8sName(name string) (config ProjectCheck, err error) {
 // the name need to be underscore one, say ops_test
 func FetchConfig(name string) (config ProjectCheck, err error) {
 	var p ConfigBody
-	resp, e := resty.SetRetryCount(3).
+	resp, e := Client().
 		//SetDebug(true).
 		R().Get(ProjectCenterAPI + "/" + name)
 	if e != nil {
@@ -77,7 +75,7 @@ type ProjectChecks map[string]ProjectCheck
 
 func FetchConfigs() (configs ProjectChecks, err error) {
 	var p ConfigsBody
-	resp, e := resty.SetRetryCount(3).
+	resp, e := Client().
 		//SetDebug(true).
 		R().Get(ProjectCenterAllAPI)
 	if e != nil {
@@ -112,7 +110,7 @@ func decodeConfigs(body []byte) (p ConfigsBody, err error) {
 }
 
 func GetProjectName(wkname string) (name string, err error) {
-	resp, err := resty.SetRetryCount(3).
+	resp, err := Client().
 		//SetDebug(true).
 		R().
 		SetFormData(map[string]string{
