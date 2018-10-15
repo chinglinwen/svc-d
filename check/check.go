@@ -28,12 +28,12 @@ var (
 	CheckOneTime bool
 	TestProject  string
 
-	CheckInterval time.Duration
+	CheckInterval string
 )
 
 // start backend check
 func Start(conf *config.Config) {
-	log.Println("start background check")
+	log.Printf("start background check for every %v\n", CheckInterval)
 
 	if CheckOneTime {
 		check(conf)
@@ -42,7 +42,10 @@ func Start(conf *config.Config) {
 	}
 
 	c := cron.New()
-	c.AddFunc("@every 10s", func() { check(conf) })
+	err := c.AddFunc("@every "+CheckInterval, func() { check(conf) })
+	if err != nil {
+		log.Fatalf("add cron error, checkinterval may not the correct format: %v\n", CheckInterval)
+	}
 	c.Start()
 }
 
