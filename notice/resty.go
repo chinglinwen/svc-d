@@ -1,4 +1,4 @@
-package check
+package notice
 
 import (
 	"gopkg.in/resty.v1"

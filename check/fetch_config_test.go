@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+func init() {
+	DEBUG = true
+}
+
 func TestFetchConfig(t *testing.T) {
 	p, err := FetchConfig("ops_test")
 	if err != nil {

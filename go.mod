@@ -21,6 +21,7 @@ require (
 	github.com/moul/http2curl v0.0.0-20170919181001-9ac6cf4d929b // indirect
 	github.com/parnurzeal/gorequest v0.2.15 // indirect
 	github.com/pkg/errors v0.8.0 // indirect
+	github.com/robfig/cron v0.0.0-20180505203441-b41be1df6967 // indirect
 	github.com/sevenNt/echo-pprof v0.1.0
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v0.0.0-20170224212429-dcecefd839c4 // indirect

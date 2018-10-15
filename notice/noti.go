@@ -4,8 +4,6 @@ package notice
 import (
 	"flag"
 	"strings"
-
-	"gopkg.in/resty.v1"
 )
 
 var (
@@ -32,10 +30,4 @@ func Send(receiver, message, status, expire string) (reply string, err error) {
 	}
 	reply = string(resp.Body())
 	return
-}
-
-var client = resty.New().SetRetryCount(3)
-
-func Client() *resty.Client {
-	return client
 }
