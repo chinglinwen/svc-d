@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+func init() {
+	DEBUG = true
+}
+
 func TestSimpleCheck(t *testing.T) {
 	fmt.Println(SimpleCheck("172.28.137.221", "8000"))
 }

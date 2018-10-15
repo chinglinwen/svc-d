@@ -19,6 +19,7 @@ import (
 
 	"github.com/chinglinwen/checkup"
 	"github.com/chinglinwen/log"
+	"github.com/robfig/cron"
 
 	"wen/svc-d/config"
 )
@@ -27,58 +28,53 @@ var (
 	CheckOneTime bool
 	TestProject  string
 
-	CheckInterval time.Duration
+	CheckInterval string
 )
 
 // start backend check
 func Start(conf *config.Config) {
-	log.Println("started fetch in the background")
+	log.Printf("start background check for every %v\n", CheckInterval)
 
-	now := time.Now()
-	prev := now
-
-	for {
-		now = time.Now()
-
-		log.Printf("starting fetch at %v, last time elapsed %v\n", now.Format(time.UnixDate), now.Sub(prev))
-		// empty it for new fetch
-		conf.Checkers = []checkup.Checker{}
-
-		projects, err := Fetchs()
-		if err != nil {
-			log.Println("fetch upstream error", err)
-			continue
-		}
-		configs, err := FetchConfigs()
-		if err != nil {
-			log.Println("fetch config error", err)
-			//continue
-		}
-
-		conf.Checkers = ConvertToCheck(projects, configs)
-		conf.Save()
-
-		log.Println("fetch ok")
-
-		err = conf.CheckAndStore()
-		if err != nil {
-			log.Println("background check error", err)
-			continue
-		}
-		log.Printf("background check ok\n")
-
-		prev = now
-
-		if CheckOneTime {
-			log.Println("check one time only, exit the loop")
-			goto EXIT
-		}
-		sleeptime := CheckInterval - time.Now().Sub(prev)
-		log.Printf("going sleep for %v\n\n", sleeptime)
-		time.Sleep(sleeptime) // a negative one will return immediately
+	if CheckOneTime {
+		check(conf)
+		log.Println("check one time only, exit the loop")
+		return
 	}
-EXIT:
-	log.Println("background check stopped")
+
+	c := cron.New()
+	err := c.AddFunc("@every "+CheckInterval, func() { check(conf) })
+	if err != nil {
+		log.Fatalf("add cron error, checkinterval may not the correct format: %v\n", CheckInterval)
+	}
+	c.Start()
+}
+
+func check(conf *config.Config) {
+	// empty it for new fetch
+	conf.Checkers = []checkup.Checker{}
+
+	projects, err := Fetchs()
+	if err != nil {
+		log.Println("fetch upstream error", err)
+		return
+	}
+	configs, err := FetchConfigs()
+	if err != nil {
+		log.Println("fetch config error", err)
+		//continue
+	}
+
+	conf.Checkers = ConvertToCheck(projects, configs)
+	conf.Save()
+
+	log.Println("fetch ok")
+
+	err = conf.CheckAndStore()
+	if err != nil {
+		log.Println("background check error", err)
+		return
+	}
+	log.Printf("background check ok\n")
 }
 
 func SimpleCheck(ip, port string) error {

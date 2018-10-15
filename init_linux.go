@@ -22,10 +22,12 @@ func init() {
 			case "debug":
 				level = "info"
 				gopsStop()
+				stopdebug()
 				log.Println("stopping gops")
 			default:
 				level = "debug"
 				gopsStart()
+				setdebug()
 				log.Println("started gops")
 			}
 			log.SetLevel(level)

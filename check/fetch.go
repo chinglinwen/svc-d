@@ -20,7 +20,6 @@ import (
 
 	"github.com/chinglinwen/checkup"
 	"github.com/chinglinwen/log"
-	"gopkg.in/resty.v1"
 )
 
 var (
@@ -139,7 +138,7 @@ func Fetch(env, name string) (p AProjectIps, err error) {
 func Fetch(env, name string) (p AProjectIps, err error) {
 	p.Env = env
 	p.Name = name
-	resp, e := resty.SetRetryCount(3).R().
+	resp, e := Client().R().
 		SetQueryParam("env", env).
 		SetQueryParam("appname", name).
 		Get(UpstreamSingleAPI)
@@ -155,7 +154,7 @@ func Fetch(env, name string) (p AProjectIps, err error) {
 }
 
 func Fetchs() (p Projects, err error) {
-	resp, e := resty.SetRetryCount(3).R().Get(UpstreamAllAPI)
+	resp, e := Client().R().Get(UpstreamAllAPI)
 	if e != nil {
 		err = e
 		return

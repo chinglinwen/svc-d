@@ -4,8 +4,6 @@ package notice
 import (
 	"flag"
 	"strings"
-
-	"gopkg.in/resty.v1"
 )
 
 var (
@@ -17,7 +15,7 @@ func Send(receiver, message, status, expire string) (reply string, err error) {
 	r := strings.NewReplacer("\"", " ", "{", "", "}", "")
 	message = r.Replace(message)
 
-	resp, e := resty.SetRetryCount(3).R().
+	resp, e := Client().R().
 		SetQueryParams(map[string]string{
 			"user":    receiver,
 			"content": message,

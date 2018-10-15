@@ -56,10 +56,11 @@ func init() {
 	conf.Save()
 
 	var err error
-	check.CheckInterval, err = time.ParseDuration(*checkInterval)
+	_, err = time.ParseDuration(*checkInterval)
 	if err != nil {
 		log.Fatalf("parse checkInterval duration error for %v", *checkInterval)
 	}
+	check.CheckInterval = *checkInterval
 
 	if *testproject != "" {
 		log.Printf("test for %v project only\n", *testproject)
